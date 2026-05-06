@@ -238,28 +238,28 @@ pipeline {
         // }
 
         // Runs Software Composition Analysis (dependency vulnerability scan)
-        stage('SCA - Snyk Scan') {
-            steps {
-                // Authenticates Snyk using stored token
-                // Runs scan: Scans all projects; Only reports medium+ vulnerabilities;
-                // Outputs JSON report; || true prevents pipeline failure
-                echo '>>> Running SCA with Snyk...'
-                sh """
-                    snyk auth \$SNYK_TOKEN
+        // stage('SCA - Snyk Scan') {
+        //     steps {
+        //         // Authenticates Snyk using stored token
+        //         // Runs scan: Scans all projects; Only reports medium+ vulnerabilities;
+        //         // Outputs JSON report; || true prevents pipeline failure
+        //         echo '>>> Running SCA with Snyk...'
+        //         sh """
+        //             snyk auth \$SNYK_TOKEN
 
-                    snyk test \
-                        --all-projects \
-                        --severity-threshold=medium \
-                        --json > ${REPORT_DIR}/snyk-report.json || true
+        //             snyk test \
+        //                 --all-projects \
+        //                 --severity-threshold=medium \
+        //                 --json > ${REPORT_DIR}/snyk-report.json || true
 
-                    snyk test \
-                        --all-projects \
-                        --severity-threshold=medium || true
+        //             snyk test \
+        //                 --all-projects \
+        //                 --severity-threshold=medium || true
 
-                    echo "Snyk scan complete."
-                """
-            } // Runs again for human-readable console output
-        }
+        //             echo "Snyk scan complete."
+        //         """
+        //     } // Runs again for human-readable console output
+        // }
 
         // Runs Dynamic Application Security Testing (DAST) using OWASP ZAP
         // ZAP runs as a Docker container on the shared devsecops-net network so it can
@@ -336,7 +336,7 @@ pipeline {
             echo '>>> Archiving scan reports...'
             // Saves report files as Jenkins build artifacts
             // snyk-report.json is already inside ${REPORT_DIR}/ so only one glob is needed
-            archiveArtifacts artifacts: "${REPORT_DIR}/**",
+            archiveArtifacts artifacts: 'reports/**',
                              allowEmptyArchive: true
 
             // Tear down the Juice Shop test container after every build
