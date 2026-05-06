@@ -5,9 +5,6 @@ pipeline {
     triggers {
         pollSCM('H/5 * * * *') // check every 5 minutes
     }
-    tools {
-        nodejs 'NodeJS-20' // Only works if configured in Jenkins
-    }
 
     // Defines environment variables accessible throughout the pipeline
     environment {
@@ -38,17 +35,6 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
-    stages {
-        stage('Build'){
-            steps {
-                echo "Building project..."
-                sh 'node -v' 
-                sh 'npm install'
-                sh 'npm test'
-            }
-        }
-    }
-
     // Defines the sequence of steps (stages) in the pipeline
     stages {
 
@@ -59,8 +45,8 @@ pipeline {
                 // Prints a message to the console
                 echo '>>> Checking out Juice Shop source...'
                 // Clones the GitHub repository (main branch)
-                git branch: 'master',
-                    url: 'jhttps://github.com/mdl-thdev/juice-shop.git'
+                git branch: 'mary',
+                    url: 'https://github.com/mdl-thdev/juice-shop.git'
                 // Creates the reports directory (if it doesn't exist)
                 sh 'mkdir -p ${REPORT_DIR}'
             }
