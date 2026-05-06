@@ -2,6 +2,10 @@ pipeline {
     // Tells Jenkins to run this pipeline on any available agent/node
     agent any
 
+    tools {
+        nodejs 'NodeJS'
+    }
+
     triggers {
         pollSCM('H/5 * * * *') // check every 5 minutes
     }
