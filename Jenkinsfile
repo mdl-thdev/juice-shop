@@ -168,7 +168,7 @@ pipeline {
         }
 
         // Checks SonarQube quality gate result
-        stage('SAST - Quality Gate') {
+        stage('SAST - SonarQube Analysis') {
             steps {
                 echo '>>> Checking SonarQube Quality Gate result...'
                 // Waits max 5 minutes
