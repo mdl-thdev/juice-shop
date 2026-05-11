@@ -6,7 +6,6 @@ pipeline {
     // Jenkins-managed tools that must already be configured
     tools {
         nodejs 'NodeJS'
-        snyk 'snyk-cli'
     }
 
     /*
@@ -148,7 +147,7 @@ pipeline {
         /*
         ======================================================
         Stage 5: Software Composition Analysis (SCA)
-        Using Snyk
+        Using Snyk (installed via npm)
         ======================================================
         */
         stage('SCA - Snyk Scan') {
@@ -157,28 +156,23 @@ pipeline {
                 echo '>>> Running SCA with Snyk...'
 
                 sh """
-
-                    # Install Snyk CLI globally
+                    # Install Snyk CLI via npm (npm comes from the NodeJS tool)
+                    # Try global install first; fall back to local install if permissions block it
                     npm install -g snyk || npm install snyk
 
-                    # Authenticate with Snyk token
+                    # Authenticate with Snyk using token from Jenkins credentials
                     npx snyk auth \$SNYK_TOKEN
 
-                    /*
-                    Run dependency vulnerability scan
-
-                    --all-projects:
-                    Detects all supported manifests
-
-                    --severity-threshold=low:
-                    Includes all findings from low and above
-                    */
+                    # Run dependency vulnerability scan and output JSON report
+                    # --all-projects: detects all supported manifests
+                    # --severity-threshold=low: includes findings from low severity upward
+                    # || true: stage continues even if vulnerabilities are found
                     npx snyk test \\
                         --all-projects \\
                         --severity-threshold=low \\
                         --json > ${REPORT_DIR}/snyk-report.json || true
 
-                    # Human-readable console output
+                    # Run again for human-readable console output
                     npx snyk test \\
                         --all-projects \\
                         --severity-threshold=low || true
